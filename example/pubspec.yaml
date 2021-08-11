@@ -1,0 +1,16 @@
+name: cups_ffi_example
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  ffi: ^1.1.2
+  convert: ^3.0.1
+  cups_ffi: 
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
