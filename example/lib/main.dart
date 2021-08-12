@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:cups_ffi/cups_ffi.dart' as cups;
 
@@ -49,6 +46,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   bool _loadingPrinters = false;
+  bool _printing = false;
   String? _printers;
   bool? _printResult;
   List<cups.Printer> printers = [];
@@ -85,11 +83,13 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     setState(() {
       _printResult = null;
+      _printing = true;
     });
     var result = cups.printRawText(cups.CupsFormat.CUPS_FORMAT_TEXT,
         printer.name, "Cups Demo", "Hello world\n\n\n");
     setState(() {
       _printResult = result;
+      _printing = false;
     });
   }
 
@@ -110,6 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     setState(() {
       _printResult = null;
+      _printing = true;
     });
 
     var data = [
@@ -117,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
       0x40,
       0x1B,
       0x74,
-      0x8,
+      0x12,
       0x54,
       0x45,
       0x53,
@@ -134,13 +135,21 @@ class _MyHomePageState extends State<MyHomePage> {
       0x86,
       0xA7,
       0x0D,
-      0x0A
+      0x0A,
+      0x0D,
+      0x0A,
+      0x0D,
+      0x0A,
+      0x0D,
+      0x0A,
+      0x0
     ];
 
     var result = cups.printRawData(
-        cups.CupsFormat.CUPS_FORMAT_RAW, printer.name, "Cups Demo", data);
+        cups.CupsFormat.CUPS_FORMAT_RAW, printer.name, "Demo", data);
     setState(() {
       _printResult = result;
+      _printing = false;
     });
   }
 
@@ -195,7 +204,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: const EdgeInsets.all(20.0),
                   child: Text("List printers"),
                 ),
-                onPressed: _loadingPrinters ? null : listPrinters,
+                onPressed:
+                    (_printing || _loadingPrinters) ? null : listPrinters,
               ),
             ),
             Padding(
@@ -205,7 +215,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: const EdgeInsets.all(20.0),
                   child: Text("Print Hello world"),
                 ),
-                onPressed: printHelloWorld,
+                onPressed:
+                    (_printing || _loadingPrinters) ? null : printHelloWorld,
               ),
             ),
             Padding(
@@ -215,7 +226,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: const EdgeInsets.all(20.0),
                   child: Text("Print raw data"),
                 ),
-                onPressed: printRaw,
+                onPressed: (_printing || _loadingPrinters) ? null : printRaw,
               ),
             ),
             Padding(

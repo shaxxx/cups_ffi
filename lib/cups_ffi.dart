@@ -1,6 +1,5 @@
 import 'dart:ffi' as ffi;
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'src/cups_native.dart';
 import 'package:ffi/ffi.dart';
@@ -86,7 +85,7 @@ bool printRawData(
           _cups.cupsWriteRequestData(CUPS_HTTP_DEFAULT, dataPtr, data.length);
       if (httpResult == 100) {
         var status =
-            _cups.cupsFinishDocument(CUPS_HTTP_DEFAULT.cast(), printerNamePtr);
+            _cups.cupsFinishDocument(CUPS_HTTP_DEFAULT, printerNamePtr);
         if (status == IPP_STATUS_OK) {
           result = true;
         }
